@@ -1,0 +1,14 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "5": "/usr/bin/php5.6 -S 127.0.0.1:8000 index.php",
+    "db": "docker exec -i mysql5 mysqldump -uroot -proot --database bhoolkupradesh > database/bhoolkupradesh_`date +'%F_%R'`.sql",
+    "dbs": "docker exec -i mysql5 mysqldump -uroot -proot --databases <mysql_container_name> > database/$1.sql",
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

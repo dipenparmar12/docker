@@ -1,0 +1,26 @@
+version: '3'
+services:
+
+  # Database
+  db1:
+    image: mariadb:10.4.26-focal
+    container_name: invoice-mariadb
+    restart: always
+    tty: true
+    ports:
+      - 4306:3306
+    volumes:
+      - ./../docker/mariadb_10_4:/var/lib/mysql
+      - ./../docker/mysqlconf:/etc/mysql/conf.d
+    environment:
+      MYSQL_DATABASE: bill
+      MYSQL_USER: user
+      MARIADB_USER: user
+      MYSQL_ROOT_PASSWORD: Admin@123
+      MARIADB_ROOT_PASSWORD: Admin@123
+      MYSQL_PASSWORD: Admin@123
+      MARIADB_PASSWORD: Admin@123
+
+# command: >
+  # bash -c "mysqld --user=root --max_allowed_packet=32M"
+  # docker-compose down && docker-compose up --remove-orphan

@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  node:
+    build:
+      context: .
+      args:
+        NODE_ENV: production
+    environment:
+      - NODE_ENV=production
+      # - MONGO_IP=production_ip
+      # - MONGO_PORT=${MONGO_PORT}
+      - MONGO_USER=${PROD_USER}
+      - MONGO_PASSWORD=${PROD_PASSWORD}
+    command: node src/app.js
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    # env_file:
+    #   - ./.env.production
+
+  mongo_db:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo_prod_vol:/data/db
+
+volumes:
+  mongo_prod_vol: {}

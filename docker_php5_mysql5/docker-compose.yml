@@ -1,0 +1,87 @@
+version: '3'
+# docker-compose down && docker-compose up --remove-orphan
+
+networks:
+  php5:
+
+# volumes: 
+#   wp:
+#   mysql_wp:
+
+services:
+  # php server
+  web:
+    image: navidonskis/nginx-php5.6
+    container_name: php5
+    ports:
+      - '8002:80'
+    restart: always
+    environment:
+      MYVALUE: value
+    networks:
+      - php5
+    volumes:
+      # 1. mount your workdir path
+      - ./src:/var/www
+      # 2. mount your configuration of site
+      #      - /mnt/docker/nginx/sites-enabled:/etc/nginx/sites-enabled
+      # 3. if you have settings for ssmtp
+      #      - /mnt/docker/nginx/ssmtp/ssmtp.conf:/etc/ssmtp/ssmtp.conf
+      # 4. if you want to override php.ini file
+      - ./env/my_php.ini:/etc/php/5.6/fpm/conf.d/custom.ini
+    # 5. have a cronjob tasks? run the command...
+  #    command:
+  #      # remember to escape variables dollar sign with duplication $$ instead $
+  #      #- '* * * * * echo "Hello $$(date)" >> /var/log/cron.log 2>&1'
+  #      #- '* * * * * echo "Hello world !" >> /var/log/cron.log 2>&1'
+
+
+  # Database
+  db:
+    container_name: mysql5
+    image: mysql/mysql-server:5.6.49
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 4306:3306
+    networks:
+      - php5
+    volumes:
+      - ./docker/mysql5:/var/lib/mysql
+      - ./env/mysqlconf:/etc/mysql/conf.d
+    # command: >
+    #           bash -c "mysqld --user=root --max_allowed_packet=32M"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bhoolkupradesh
+      MYSQL_USER: dipen
+      MYSQL_PASSWORD: dipen
+
+  # phpmyadmin
+  phpmyadmin:
+    container_name: phpmyadmin
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - php5
+
+# // my_php.ini
+# file_uploads = On
+# memory_limit = 500M
+# upload_max_filesize = 500M
+# post_max_size = 500M
+# max_execution_time = 600
+
+## access mysql CLI
+# docker exec -it mysql5 /bin/bash
+# mysql -p # password:root
+# sudo rm -fr wp mysql_wp
+# sudo rm -fr wp mysql_wp && docker-compose down
+# sudo rm -fr wp mysql_wp && docker-compose down && docker-compose up --remove-orphan
