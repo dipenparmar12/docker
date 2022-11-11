@@ -1,0 +1,6 @@
+[mysqld]
+max_allowed_packet=40M
+
+[mysqldump]
+; user=root
+; password=root
